@@ -3,39 +3,50 @@ import smtplib
 import random
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from openai import OpenAI
+from google import genai
 
-# --- 1. CONFIGURATION ---
-OR_KEY = os.environ.get("AIzaSyBUlBeSiGmx5_nGW4AyIibRGF9xveB4Fp4")
+# --- CONFIGURATION ---
+# Use the key you provided in your GitHub Secrets under GEMINI_API_KEY
+GEMINI_KEY = os.environ.get("AIzaSyBUlBeSiGmx5_nGW4AyIibRGF9xveB4Fp4")
+BLOGGER_EMAIL = "karroumiabdo580.aipost@blogger.com"
+SENDER_EMAIL = "karroumiabdo580@gmail.com" 
+SENDER_PASSWORD = "arojzxofkobgtpdk" 
 
-# 2026 Strict Auth Handshake
-client = OpenAI(
-  base_url="https://openrouter.ai/api/v1",
-  api_key=OR_KEY,
-  default_headers={
-    "HTTP-Referer": "https://github.com/karroumiabdo580", # REQUIRED: Use your real GitHub URL
-    "X-Title": "Blogger AutoBot 2026",                 # REQUIRED: Any name works
-    "User-Agent": "Mozilla/5.0 (Script)"                # Helps bypass "Cookie" checks
-  }
-)
+client = genai.Client(api_key=GEMINI_KEY)
+
+topics = ["Future of AI 2026", "Passive Income with AI", "Top Tech Trends"]
+target_keyword = random.choice(topics)
 
 def generate_content(keyword):
-    print(f"🤖 Requesting content for: {keyword}")
-    try:
-        completion = client.chat.completions.create(
-          model="google/gemini-2.0-flash-lite-preview:free",
-          messages=[
-            {"role": "user", "content": f"Write a professional 1200-word blog post about '{keyword}' in clean HTML. Use H2 headers."}
-          ],
-          extra_headers={
-              "HTTP-Referer": "https://github.com/karroumiabdo580",
-          }
-        )
-        return completion.choices[0].message.content
-    except Exception as e:
-        # Catching the exact 401 and explaining why
-        if "401" in str(e):
-            print("❌ AUTH ERROR: OpenRouter rejected the key. Check if your key has credits or if it's the 'sk-or-v1' type.")
-        raise e
+    print(f"🤖 Using Google Gemini for: {keyword}")
+    # Using 2.0 Flash (latest for 2026)
+    response = client.models.generate_content(
+        model="gemini-2.0-flash", 
+        contents=f"Write a 1200 word blog post about {keyword} in HTML."
+    )
+    
+    img_url = f"https://image.pollinations.ai/prompt/tech_{keyword.replace(' ','_')}?width=800&height=600"
+    return f'<div><img src="{img_url}"><br>{response.text}</div>'
 
-# ... (keep the rest of your publish_post() code)
+def publish_post():
+    try:
+        content = generate_content(target_keyword)
+        
+        msg = MIMEMultipart()
+        msg['Subject'] = target_keyword
+        msg['From'] = SENDER_EMAIL
+        msg['To'] = BLOGGER_EMAIL
+        msg.attach(MIMEText(content, 'html'))
+        
+        print("📧 Connecting to Gmail...")
+        server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+        server.login(SENDER_EMAIL, SENDER_PASSWORD)
+        server.sendmail(SENDER_EMAIL, BLOGGER_EMAIL, msg.as_string())
+        server.quit()
+        print("✅ SUCCESS! Email sent to Blogger.")
+        
+    except Exception as e:
+        print(f"❌ ERROR: {str(e)}")
+
+if __name__ == "__main__":
+    publish_post()
