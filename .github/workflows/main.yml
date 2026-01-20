@@ -1,23 +1,32 @@
 name: BloggerAutoPost
+
 on:
   schedule:
+    # This runs every 6 hours (at minute 0 of 00:00, 06:00, 12:00, 18:00 UTC)
     - cron: '0 */6 * * *'
-  workflow_dispatch:
-
+  workflow_dispatch: # This allows you to run it manually for testing
+  - name: Install dependencies
+        run: pip install openai
 jobs:
   post:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install dependencies
-        run: pip install requests
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install openai requests
+
       - name: Run AI Writer
         env:
+          # This line maps your GitHub Secret to the script
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: python auto_blogger.py
-        - name: Install dependencies
-        run: pip install openai
+      
