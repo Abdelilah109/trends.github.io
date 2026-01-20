@@ -2,8 +2,8 @@ name: BloggerAutoPost
 
 on:
   schedule:
-    - cron: '0 */6 * * *' # Runs every 6 hours
-  workflow_dispatch:      # Allows manual trigger
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
 
 jobs:
   post:
@@ -20,12 +20,11 @@ jobs:
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install openai requests
+          # Clean out old libraries to prevent namespace conflicts
+          pip uninstall -y google-generativeai google-cloud-aiplatform
+          pip install google-genai requests
 
       - name: Run AI Writer
         env:
-          # Injecting the secret as BOTH environment variables 
-          # to ensure the OpenAI library finds it automatically.
-          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-          OPENAI_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python auto_blogger.py
