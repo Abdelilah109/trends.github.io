@@ -1,27 +1,27 @@
 import os
 import smtplib
 import random
-import time
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from openai import OpenAI
 
-# --- 1. CONFIGURATION ---
-# Ensure your GitHub Secret is named OPENROUTER_API_KEY
-OR_KEY = os.environ.get("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")
-BLOGGER_EMAIL = "karroumiabdo580.aipost@blogger.com"
-SENDER_EMAIL = "karroumiabdo580@gmail.com" 
-SENDER_PASSWORD = "arojzxofkobgtpdk" 
+# --- 1. ENHANCED CONFIGURATION ---
+# This looks for the key under both possible secret names
+api_key = os.environ.get("OPENROUTER_API_KEY") or os.environ.get("OPENAI_API_KEY")
 
-# Use the official OpenRouter base URL
+if not api_key:
+    raise ValueError("❌ ERROR: No API Key found. Please check your GitHub Secrets!")
+
 client = OpenAI(
   base_url="https://openrouter.ai/api/v1",
-  api_key=OR_KEY,
+  api_key=api_key,
   default_headers={
-    "HTTP-Referer": "https://github.com/karroumiabdo580", # Required by OpenRouter
+    "HTTP-Referer": "https://github.com/karroumiabdo580",
     "X-Title": "Blogger Bot 2026", 
   }
 )
+
+# ... rest of your code ... (generate_content and publish_post functions)
 
 topics = [
     "Top 10 Passive Income AI Tools for 2026",
