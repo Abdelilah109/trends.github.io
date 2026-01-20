@@ -12,10 +12,10 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11' # Updated version
+          python-version: '3.11'
       - name: Install dependencies
-        run: pip install google-genai
+        run: pip install requests
       - name: Run AI Writer
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: python auto_blogger.py
