@@ -1,22 +1,25 @@
 name: BloggerAutoPost
 on:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 */6 * * *' # Line 9: Must have a dash and a space before 'cron'
   workflow_dispatch:
 
 jobs:
   post:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install
+
+      - name: Install Dependencies
         run: pip install openai requests
-      - name: Run
+
+      - name: Run AI Writer
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: python auto_blogger.py
