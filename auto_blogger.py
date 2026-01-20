@@ -26,14 +26,20 @@ topics = [
 target_keyword = random.choice(topics)
 
 # --- 3. GENERATE HUMAN-LIKE CONTENT ---
-def generate_content(keyword):
-    prompt = f"""
-    Write a 1,500-word viral blog post about '{keyword}'. 
-    - Use HTML tags: <h2> for headers, <p> for text, <b> for emphasis.
-    - Style: Conversational, expert, and 'human'. Use 'I' and 'My results'.
-    - Include: A 'Pros and Cons' table and an 'FAQ' section.
-    - Important: Do not include the title in the body (the email subject will be the title).
-    """
+prompt = f"""
+Act as a professional tech journalist with 10 years of experience. 
+Write a deep-dive, 1,500-word article about '{keyword}'.
+
+REQUIREMENTS:
+1. First-Person Perspective: Use "I tried this..." or "In my experience..." to show human 'Experience'.
+2. Structure: Use H2 and H3 tags. Start with a direct answer to the main question in the first paragraph.
+3. Added Value: Include a 'Secret Tip' or 'Hack' section that is not commonly found on the web.
+4. Formatting: Use bullet points, bold text for key terms, and a summary table of pros/cons.
+5. Search Intent: Analyze why a user would search for this and solve their specific problem.
+6. FAQ: Add a 5-question FAQ at the end using FAQ schema style.
+
+FORMAT: Output strictly in clean HTML.
+"""
     response = client.models.generate_content(model="gemini-1.5-flash", contents=prompt)
     
     # 3 Images from Pollinations (Copyright Free)
