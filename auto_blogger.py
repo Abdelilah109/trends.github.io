@@ -6,7 +6,7 @@ from email.mime.multipart import MIMEMultipart
 from openai import OpenAI
 
 # --- 1. CONFIGURATION ---
-OR_KEY = os.environ.get("OPENROUTER_API_KEY")
+OR_KEY = os.environ.get("AIzaSyBUlBeSiGmx5_nGW4AyIibRGF9xveB4Fp4")
 
 # 2026 Strict Auth Handshake
 client = OpenAI(
