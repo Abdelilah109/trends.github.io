@@ -6,8 +6,7 @@ from email.mime.multipart import MIMEMultipart
 from google import genai
 
 # --- 1. CONFIGURATION ---
-# I am using your provided details directly as requested
-GEMINI_KEY = os.environ.get("GEMINI_API_KEY") # Keep this as a Secret for safety!
+GEMINI_KEY = os.environ.get("AIzaSyBUlBeSiGmx5_nGW4AyIibRGF9xveB4Fp4")
 BLOGGER_EMAIL = "karroumiabdo580.aipost@blogger.com"
 SENDER_EMAIL = "karroumiabdo580@gmail.com" 
 SENDER_PASSWORD = "arojzxofkobgtpdk" 
@@ -27,15 +26,15 @@ target_keyword = random.choice(topics)
 def generate_content(keyword):
     prompt = f"Write a 1,500-word viral tech blog post about '{keyword}' in clean HTML format. Use H2 headers, bullet points, and a professional tone."
     
-    # AI Generation
+    # FIXED MODEL NAME HERE
     response = client.models.generate_content(model="gemini-1.5-flash", contents=prompt)
     
-    # Image Generation via Pollinations
+    # Image Generation
     img_url = f"https://image.pollinations.ai/prompt/futuristic%20tech%20{keyword.replace(' ','%20')}?width=1080&height=720&nologo=true"
     
     html_body = f"""
-    <div style="font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.8; color: #333;">
-        <img src="{img_url}" style="width:100%; border-radius:15px; margin-bottom: 20px;" alt="Feature Image">
+    <div style="font-family: Arial, sans-serif; line-height: 1.8; color: #333;">
+        <img src="{img_url}" style="width:100%; border-radius:15px; margin-bottom: 20px;">
         <div style="font-size: 16px;">
             {response.text}
         </div>
@@ -45,25 +44,23 @@ def generate_content(keyword):
     """
     return html_body
 
-# --- 4. PUBLISH FUNCTION ---
 def publish_post():
     print(f"🚀 Starting process for: {target_keyword}")
-    content = generate_content(target_keyword)
-    
-    msg = MIMEMultipart()
-    msg['Subject'] = target_keyword
-    msg['From'] = SENDER_EMAIL
-    msg['To'] = BLOGGER_EMAIL
-    msg.attach(MIMEText(content, 'html'))
-    
     try:
-        # Connect to Gmail's secure server
+        content = generate_content(target_keyword)
+        
+        msg = MIMEMultipart()
+        msg['Subject'] = target_keyword
+        msg['From'] = SENDER_EMAIL
+        msg['To'] = BLOGGER_EMAIL
+        msg.attach(MIMEText(content, 'html'))
+        
         with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
             server.login(SENDER_EMAIL, SENDER_PASSWORD)
             server.sendmail(SENDER_EMAIL, BLOGGER_EMAIL, msg.as_string())
         print(f"✅ SUCCESS! Post '{target_keyword}' is now live on Blogger.")
     except Exception as e:
-        print(f"❌ FAILED to send email: {e}")
+        print(f"❌ ERROR: {e}")
 
 if __name__ == "__main__":
     publish_post()
