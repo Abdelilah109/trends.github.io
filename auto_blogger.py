@@ -8,7 +8,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 # --- CONFIGURATION ---
-OR_KEY = os.environ.get("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")
+OR_KEY = os.environ.get("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")
 BLOGGER_EMAIL = "karroumiabdo580.aipost@blogger.com"
 SENDER_EMAIL = "karroumiabdo580@gmail.com" 
 SENDER_PASSWORD = "arojzxofkobgtpdk" 
