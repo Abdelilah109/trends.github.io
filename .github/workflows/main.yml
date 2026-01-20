@@ -1,25 +1,6 @@
-name: BloggerAutoPost
-on:
-  schedule:
-    - cron: '0 */6 * * *'
-  workflow_dispatch:
-
-jobs:
-  post:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install Dependencies
-        run: pip install openai requests
-
-      - name: Run AI Writer
+- name: Run AI Writer
         env:
+          # This maps the GitHub Secret to the Python Environment Variable
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENROUTER_API_KEY }} 
         run: python auto_blogger.py
