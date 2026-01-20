@@ -1,7 +1,7 @@
 name: BloggerAutoPost
 on:
   schedule:
-    - cron: '0 */6 * * *' # Line 9: Must have a dash and a space before 'cron'
+    - cron: '0 */6 * * *'
   workflow_dispatch:
 
 jobs:
